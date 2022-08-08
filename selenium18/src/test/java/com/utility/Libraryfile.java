@@ -44,7 +44,7 @@ public void launchbrowser() {
 		driver =new InternetExplorerDriver();
 		break;
 	}
-	driver.get(objProperties.getProperty("GmoOnlineURL"));
+	//driver.get(objProperties.getProperty("GmoOnlineURL"));
 	driver.manage().window().maximize();
 	driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
 }
