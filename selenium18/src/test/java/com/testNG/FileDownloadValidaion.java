@@ -2,7 +2,8 @@ package com.testNG;
 
 import org.testng.annotations.Test;
 
-import com.pages.MultipleTabPage;
+import com.pages.DownloadFilePage;
+import com.pages.WebTable;
 import com.utility.Constants;
 import com.utility.Libraryfile;
 
@@ -10,12 +11,16 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 
+import java.io.File;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -25,45 +30,43 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.AfterSuite;
 
-public class ValidatingMyWindows extends Libraryfile {
-	
- 
+public class FileDownloadValidaion extends Libraryfile {
 	
   @Test (priority=0)
-  public void ValidateMultipleWindow () {
-	  System.out.println("Validate Multiple windows");
-	  driver.navigate().to(objProperties.getProperty("MultipleWindowsURL"));
+  public void ValidaeFileDownloadPage () {
+	  System.out.println("ValidaeFileDownloadPage");
+	  driver.navigate().to(objProperties.getProperty("FileDownload"));
 		 driver.manage().timeouts().pageLoadTimeout(Constants.pageloadtimeout, TimeUnit.SECONDS);
 		 driver.manage().window().maximize();
-		 String TitleofparentWindow = driver.getTitle();
-		 System.out.println("TitleofparentWindow:"+TitleofparentWindow);
-		 Assert.assertEquals(TitleofparentWindow, objProperties.getProperty("MultipeWindowParentTitle"));
+		 String TitleofFileDownloadPage = driver.getTitle();
+	 System.out.println("TitleofWebTablepage:"+TitleofFileDownloadPage);}
+		//Assert.assertEquals(TitleofWebTablepage, objProperties.getProperty("MultipeWindowParentTitle"));
 
 	  
   
-  } 
+  @Test(priority=1)
+  public void ValidateFileDownload() throws InterruptedException {
+	  System.out.println("Inside page download");
+	  JavascriptExecutor js = (JavascriptExecutor) driver;
+	  js.executeScript("window.scrollBy, (0,300)");
+	  driver.findElement(DownloadFilePage.Downloadlink).click();
+	  
+	  Thread.sleep(8000);
+		File objFile = new File(System.getProperty("user.dir"));
+		File[] AllFiles = objFile.listFiles();
+		for(File IndividualFile:AllFiles) {
+			String FileName = IndividualFile.getName();
+			System.out.println("FileName:"+FileName);
+			Boolean fileFound = false;
+			if(FileName.contains(objProperties.getProperty("TypeOfDownloadedFile"))) {
+				fileFound=true;
+				Assert.assertTrue(fileFound, "File Downloaded is Not Validated");
+				//IndividualFile.deleteOnExit();
+			}
+		}
+  }
 
-@Test (priority=1)
-	public void ValidateNewBrowserWindow() throws InterruptedException {
-	String ParentWindow = driver.getWindowHandle();
-		driver.findElement(MultipleTabPage.NewTab).click();
-	Set<String> Allwindows = driver.getWindowHandles();
-	for (String IndiviualWindow : Allwindows){ 
-		driver.switchTo().window(IndiviualWindow);
-		Thread.sleep(3000);
-		String Title = driver.getTitle();
-		System.out.println("Title of Window:"+Title);
-		if(!Title.equalsIgnoreCase(objProperties.getProperty("MultipeWindowParentTitle"))) {
-		String NewTabText =	driver.findElement(MultipleTabPage.NewBrowserText).getText();
-		System.out.println("New Tab text"+NewTabText);
-		Assert.assertEquals(NewTabText,objProperties.getProperty("NewTabTexts") );
-		driver.close();
-		}
-		
-	}
-	driver.switchTo().window(ParentWindow);
-		
-		}
+
 		
 		
 	

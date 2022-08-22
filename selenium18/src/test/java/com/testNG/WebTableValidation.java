@@ -2,7 +2,7 @@ package com.testNG;
 
 import org.testng.annotations.Test;
 
-import com.pages.MultipleTabPage;
+import com.pages.WebTable;
 import com.utility.Constants;
 import com.utility.Libraryfile;
 
@@ -10,12 +10,14 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -25,45 +27,50 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.AfterSuite;
 
-public class ValidatingMyWindows extends Libraryfile {
-	
- 
+public class WebTableValidation extends Libraryfile {
 	
   @Test (priority=0)
-  public void ValidateMultipleWindow () {
-	  System.out.println("Validate Multiple windows");
-	  driver.navigate().to(objProperties.getProperty("MultipleWindowsURL"));
+  public void ValidateWebpage () {
+	  System.out.println("Validate WebTable page");
+	  driver.navigate().to(objProperties.getProperty("WebTableURL"));
 		 driver.manage().timeouts().pageLoadTimeout(Constants.pageloadtimeout, TimeUnit.SECONDS);
 		 driver.manage().window().maximize();
-		 String TitleofparentWindow = driver.getTitle();
-		 System.out.println("TitleofparentWindow:"+TitleofparentWindow);
-		 Assert.assertEquals(TitleofparentWindow, objProperties.getProperty("MultipeWindowParentTitle"));
-
+		 String TitleofWebTablepage = driver.getTitle();
+		 String PageSource = driver.getPageSource();
+		 System.out.println("PageSource:"+PageSource);
+		 if(PageSource.contains("Web Table")) {
+			Assert.assertTrue(true);		 
+		 
+		}
+		
+  }
 	  
   
-  } 
+  
 
-@Test (priority=1)
-	public void ValidateNewBrowserWindow() throws InterruptedException {
-	String ParentWindow = driver.getWindowHandle();
-		driver.findElement(MultipleTabPage.NewTab).click();
-	Set<String> Allwindows = driver.getWindowHandles();
-	for (String IndiviualWindow : Allwindows){ 
-		driver.switchTo().window(IndiviualWindow);
-		Thread.sleep(3000);
-		String Title = driver.getTitle();
-		System.out.println("Title of Window:"+Title);
-		if(!Title.equalsIgnoreCase(objProperties.getProperty("MultipeWindowParentTitle"))) {
-		String NewTabText =	driver.findElement(MultipleTabPage.NewBrowserText).getText();
-		System.out.println("New Tab text"+NewTabText);
-		Assert.assertEquals(NewTabText,objProperties.getProperty("NewTabTexts") );
-		driver.close();
-		}
+@Test(priority = 1)
+public void ReadWebTable() {
+	
+	System.out.println("Inside webtable");
+	List<WebElement> AllFirstName = driver.findElements(WebTable.FirstName);
+	int size = AllFirstName.size();
+	System.out.println("Number of first names:"+size);
+	for(int i=2;i<=size;i++){
+		String FirstName = driver.findElement(By.xpath("//table/tbody/tr["+i+"]/td[2] ")).getText();
+     if(FirstName.equalsIgnoreCase(objProperties.getProperty("webTableFirstName"))) {
+
+    	 String LastName = driver.findElement(By.xpath("//table/tbody/tr["+i+"]/td[3]")).getText();
+    	 System.out.println("Last name is :"+LastName);
+    	 break;
+    	 
+    	 
+    	 
+     }
+		
 		
 	}
-	driver.switchTo().window(ParentWindow);
-		
-		}
+	
+}
 		
 		
 	
