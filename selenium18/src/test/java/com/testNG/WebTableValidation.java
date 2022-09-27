@@ -104,7 +104,7 @@ public void ReadWebTable() {
   }
 
   @BeforeTest
-  public void beforeTest() {
+  public void beforeTest()  {
 	  System.out.println("before test");
 	  launchbrowser();
 
